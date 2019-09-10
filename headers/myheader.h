@@ -1,3 +1,3 @@
 #define BASETIME 1050
-int counter = 1;
-int distance = 0;
+//#define BASEDIST 33
+#define BASEDIST 0.1
