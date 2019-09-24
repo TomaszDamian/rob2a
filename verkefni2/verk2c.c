@@ -46,12 +46,13 @@ task main()
 
 //	reset_encoder();
 	wait1Msec(2000);
-	for(int counter =1;counter<=6;counter++){
-		drive(basedist,true);
+	for(int counter =0;counter<=13;counter++){
+		drive(BASEDIST,true);
 		StopMotors(500);
-		Turn(Turndist,turns[counter-1]);
+		Turn(TURNDIST,turns[counter]);
 		StopMotors(500);
 	}
+	drive(BASEDIST,true);
 	//Turn(Turndist,turns[1]);
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

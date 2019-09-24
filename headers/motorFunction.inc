@@ -51,16 +51,34 @@ void Turn(int dist, int turns)
 	while(abs(SensorValue[RightQuadEncoder]) < dist || abs(SensorValue[LeftQuadEncoder]) < dist) // While the right encoder is less than distance:
 	{
 		if(turns == 1){
+			if(abs(SensorValue[RightQuadEncoder]) == abs(SensorValue[LeftQuadEncoder])){
 			motor[rightMotor] = -80;         /* Run both motors        */
 			motor[leftMotor]  = 80;         /* forward at half speed. */
+			}
+			else if(abs(SensorValue[RightQuadEncoder]) > abs(SensorValue[LeftQuadEncoder])){
+				motor[rightMotor] = -60;
+				motor[leftMotor] = 80;
+			}
+			else{
+				motor[rightMotor] = -80;
+				motor[leftMotor] = 60;
+			}
 		}
 		else {
+			if(abs(SensorValue[RightQuadEncoder]) == abs(SensorValue[LeftQuadEncoder])){
 			motor[rightMotor] = 80;         /* Run both motors        */
 			motor[leftMotor]  = -80;         /* forward at half speed. */
+			}
+			else if(abs(SensorValue[RightQuadEncoder]) > abs(SensorValue[LeftQuadEncoder])){
+				motor[rightMotor] = 60;
+				motor[leftMotor] = -80;
+			}
+			else{
+				motor[rightMotor] = 80;
+				motor[leftMotor] = -60;
+			}
 		}
-
 	}
-
 		motor[rightMotor] = 0;            /* Stop the motors once desired */
 		motor[leftMotor]  = 0; 						/* distance has been reached.   */
 }
