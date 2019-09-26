@@ -1,26 +1,30 @@
 //PI * diameter (PI * 10.5)
 //cirucumference  = 33 drivedist number
-
+//++++++++++++++++++++++++++++++++++++++++| Drive_time |+++++++++++++++++++++++++++++++++++++++++++
+void drive_time(int drive_time,bool b_f){
+	int dir = (b_f)? (1):(-1);
+	motor[rightMotor] = dir*127;
+	motor[leftMotor]  = dir*127;
+	wait1Msec(drive_time);
+}
 //+++++++++++++++++++++++++++++++++++++++++| stopMotor |+++++++++++++++++++++++++++++++++++++++++++
 void StopMotors(int sop_time){
 	motor[leftMotor]=0;
 	motor[rightMotor]=0;
 	wait1Msec(sop_time);
 }
-
 //+++++++++++++++++++++++++++++++++++++++++| reset_encoder |+++++++++++++++++++++++++++++++++++++++++++
 void reset_encoder(){
 	SensorValue[RightQuadEncoder] = 0;	  // Set the encoder so that it starts counting at 0
 	SensorValue[LeftQuadEncoder]  = 0;	  // Set the encoder so that it starts counting at 0
 }
-
 //+++++++++++++++++++++++++++++++++++++++++++++| drive |+++++++++++++++++++++++++++++++++++++++++++++++
-void drive(int dist, bool b_f){				// Robot waits for 2000 milliseconds before executing program
+void Drive(int dist, bool b_f){				// Robot waits for 2000 milliseconds before executing program
 	// returnar true = 1 | false = -1
 	reset_encoder();
-	int dir = (b_f)? (1):(-1);
+int dir = (b_f)? (1):(-1);
 	int distance = dist * 10;
-	while(distance > abs(SensorValue[RightQuadEncoder]) || abs(SensorValue[LeftQuadEncoder]) < distance)		// Creates an infinite loop, since "true" always evaluates to true
+	while(distance > abs(SensorValue[RightQuadEncoder]) && abs(SensorValue[LeftQuadEncoder]) < distance)		// Creates an infinite loop, since "true" always evaluates to true
 	{
 		if(SensorValue[RightQuadEncoder] == SensorValue[LeftQuadEncoder]) // If RightQuadEncoder has counted the same amount as LeftQuadEncoder:
 		{
@@ -42,7 +46,6 @@ void drive(int dist, bool b_f){				// Robot waits for 2000 milliseconds before e
 		}
 	}
 }
-
 //+++++++++++++++++++++++++++++++++++++++++++++| turns |++++++++++++++++++++++++++++++++++++++++++++++
 void Turn(int dist, int turns)
 {
@@ -51,36 +54,42 @@ void Turn(int dist, int turns)
 	while(abs(SensorValue[RightQuadEncoder]) < dist || abs(SensorValue[LeftQuadEncoder]) < dist) // While the right encoder is less than distance:
 	{
 		if(turns == 1){
-			if(abs(SensorValue[RightQuadEncoder]) == abs(SensorValue[LeftQuadEncoder])){
 			motor[rightMotor] = -80;         /* Run both motors        */
 			motor[leftMotor]  = 80;         /* forward at half speed. */
-			}
-			else if(abs(SensorValue[RightQuadEncoder]) > abs(SensorValue[LeftQuadEncoder])){
-				motor[rightMotor] = -60;
-				motor[leftMotor] = 80;
-			}
-			else{
-				motor[rightMotor] = -80;
-				motor[leftMotor] = 60;
-			}
 		}
 		else {
-			if(abs(SensorValue[RightQuadEncoder]) == abs(SensorValue[LeftQuadEncoder])){
 			motor[rightMotor] = 80;         /* Run both motors        */
 			motor[leftMotor]  = -80;         /* forward at half speed. */
-			}
-			else if(abs(SensorValue[RightQuadEncoder]) > abs(SensorValue[LeftQuadEncoder])){
-				motor[rightMotor] = 60;
-				motor[leftMotor] = -80;
-			}
-			else{
-				motor[rightMotor] = 80;
-				motor[leftMotor] = -60;
-			}
 		}
-	}
+	}	
 		motor[rightMotor] = 0;            /* Stop the motors once desired */
 		motor[leftMotor]  = 0; 						/* distance has been reached.   */
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++| turn_Giro |++++++++++++++++++++++++++++++++++++++++++++++
+
+void turn_giro(int degrees10,bool counterclock){
+	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
+	reset_encoder();
+  //Reconfigure Analog Port 7 as a Gyro sensor and allow time for ROBOTC to calibrate it
+  SensorType[LeftQuadEncoder] = sensorGyro;
+  wait1Msec(1500);
+
+  while(abs(SensorValue[LeftQuadEncoder]) < degrees10)
+  {
+		if (counterclock){
+		motor[rightMotor] = 80;
+		motor[leftMotor] = -80;
+		}
+		else{
+		motor[rightMotor] = -80;
+		motor[leftMotor] = 80;
+		}
+  }
+
+  //Brief brake to stop some drift
+  motor[rightMotor] = -5;
+  motor[leftMotor] = 5;
+  wait1Msec(250);
+}
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
