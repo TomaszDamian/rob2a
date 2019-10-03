@@ -42,17 +42,17 @@
 task main()
 {
 	// 1 = haegri || 0 = vinstri
-	int turns[14] = {1,0,0,1,1,0,1,1,0,1,1,0,0,1};
+	//int turns[14] = {1,0,0,1,1,0,1,1,0,1,1,0,0,1};
+	bool turns[14] = {false,true,true,false,false,true,false,false,true,false,false,true,true,false};
 
-//	reset_encoder();
 	wait1Msec(2000);
 	for(int counter =0;counter<=13;counter++){
-		drive(BASEDIST,true);
+		Drive(BASEDIST,true);
 		StopMotors(500);
-		Turn(TURNDIST,turns[counter]);
+		//turn(TURNDIST,turns[counter]);
+		turn_giro(TURNGIRO,turns[counter]);
 		StopMotors(500);
 	}
-	drive(BASEDIST,true);
-	//Turn(Turndist,turns[1]);
+	Drive(BASEDIST,true);
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
