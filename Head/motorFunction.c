@@ -152,3 +152,32 @@ task DriveUsingController(){
    	}
   }
 }
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+task EmergencyStop(){
+	bool RobotStatus = false;
+	while(true){
+		if(SensorValue[FrontButton] == 1){
+			if(RobotStatus){
+				StopTask(DriveUsingController);
+				RobotStatus = true;
+			}
+			else{
+				StartTask(DriveUsingController);
+				RobotStatus = false;
+			}
+
+		}
+		else if(SensorValue[BackButton] == 1){
+			if(RobotStatus){
+				suspendTask(DriveUsingController);
+				RobotStatus = true;
+			}
+			else{
+				StartTask(DriveUsingController);
+				RobotStatus = false;
+			}
+		}
+	}
+}
