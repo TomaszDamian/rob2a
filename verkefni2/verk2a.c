@@ -17,9 +17,8 @@
 |*                                         - Moving Forward -                                         *|
 |*                                      ROBOTC on VEX 2.0 CORTEX                                      *|
 |*                                                                                                    *|
-|*  This program instructs your robot to move forward at full power for three seconds.  There is a    *|
-|*  two second pause at the beginning of the program.                                                 *|
-|*                                                                                                    *|
+|*  This program instructs to move forward 0,5 meter and then back 0,5 meter and repeat it            *|
+|*  0,5 meters more each time to 3 meters using basetime                                              *|
 |*                                        ROBOT CONFIGURATION                                         *|
 |*    NOTES:                                                                                          *|
 |*    1)  Reversing 'rightMotor' (port 2) in the "Motors and Sensors Setup" is needed with the        *|
@@ -27,15 +26,10 @@
 |*    2)  Power levels that can be assigned to a motor port range from -127 (full reverse) to         *|
 |*        127 (full forward).                                                                         *|
 |*                                                                                                    *|
-|*    MOTORS & SENSORS:                                                                               *|
-|*    [I/O Port]          [Name]              [Type]                [Description]                     *|
-|*    Motor Port 2        rightMotor          VEX 3-wire module     Right side motor                  *|
-|*    Motor Port 3        leftMotor           VEX 3-wire module     Left side motor                   *|
 \*-----------------------------------------------------------------------------------------------4246-*/
 
 
-#include "../headers/myheader.h"
-#include "../headers/MotorFunctions.c"
+#include "../Head/constNumber.h"
 
 //+++++++++++++++++++++++++++++++++++++++++++++| MAIN |+++++++++++++++++++++++++++++++++++++++++++++++
 task main()

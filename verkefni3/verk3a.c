@@ -19,6 +19,11 @@
 
 task main ()
 {
+	StartTask(battery);
   StartTask(DriveUsingController);
   StartTask(EmergencyStop);
+  while(true){
+
+  }
+
 }

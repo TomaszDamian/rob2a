@@ -17,8 +17,8 @@
 |*                                   - Point Turns with Encoders -                                    *|
 |*                                      ROBOTC on VEX 2.0 CORTEX                                      *|
 |*                                                                                                    *|
-|*  This program instructs the robot to turn left, and then right, using feedback from the encoders   *|
-|*  to determine how much.  There is a 2 second pause at the beginning of the program.                *|
+|*  This program follows a path that is predetermined, using basedist to move forward and giro turn   *|
+|*  system to turn.                                                                                   *|
 |*                                                                                                    *|
 |*                                        ROBOT CONFIGURATION                                         *|
 |*    NOTES:                                                                                          *|
@@ -27,29 +27,20 @@
 |*    2)  Whichever encoder is being used for feedback should be cleared just before it starts        *|
 |*        counting by using the "SensorValue(encoder) = 0;".  This helps ensure consistancy.          *|
 |*                                                                                                    *|
-|*    MOTORS & SENSORS:                                                                               *|
-|*    [I/O Port]          [Name]              [Type]                [Description]                     *|
-|*    Motor   - Port 2    rightMotor          VEX 3-wire module     Right side motor                  *|
-|*    Motor   - Port 3    leftMotor           VEX 3-wire module     Left side motor                   *|
-|*    Digital - Port 1,2  rightEncoder        VEX Shaft Encoder     Right side                        *|
-|*    Digital - Port 3,4  leftEncoder         VEX Shaft Encoder     Left side                         *|
 \*----------------------------------------------------------------------------------------------------*/
 
-#include "../headers/motorFunction.inc"
-#include "../headers/constNumber.h"
+#include "../Head/constNumber.h"
 
 //+++++++++++++++++++++++++++++++++++++++++++++| MAIN |+++++++++++++++++++++++++++++++++++++++++++++++
 task main()
 {
-	// 1 = haegri || 0 = vinstri
-	//int turns[14] = {1,0,0,1,1,0,1,1,0,1,1,0,0,1};
+	// false = haegri || true = vinstri
 	bool turns[14] = {false,true,true,false,false,true,false,false,true,false,false,true,true,false};
 
 	wait1Msec(2000);
 	for(int counter =0;counter<=13;counter++){
 		Drive(BASEDIST,true);
 		StopMotors(500);
-		//turn(TURNDIST,turns[counter]);
 		turn_giro(TURNGIRO,turns[counter]);
 		StopMotors(500);
 	}

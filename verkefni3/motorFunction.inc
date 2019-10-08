@@ -92,14 +92,13 @@ void turn_giro(int degrees10,bool counterclock){
   motor[leftMotor] = 5;
   wait1Msec(250);
 }
-//++++++++++++++++++++++++++++++++++++ DriveUsingController ++++++++++++++++++++++++++++++++++++++
-
-task DriveUsingController(){
-	int joy_x;            // will hold the X value of the analog stick (choices below)
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+task driveJoystick(){
+ int joy_x;            // will hold the X value of the analog stick (choices below)
   int joy_y;            // will hold the Y value of the analog stick (choices below)
   int threshold = 15;   // helps to eliminate 'noise' from a joystick that isn't perfectly at (0,0)
 
-  while(true)
+  while((SensorValue[FrontButton] != 1) && (SensorValue[BackButton] != 1) && (vexRT[Btn8D] != 1))
   {
     joy_x = vexRT[Ch1];   // This is the RIGHT analog stick.  For LEFT, change 'Ch1' to 'Ch4'.
     joy_y = vexRT[Ch2];   // This is the RIGHT analog stick.  For LEFT, change 'Ch2' to 'Ch3'.
@@ -152,67 +151,3 @@ task DriveUsingController(){
    	}
   }
 }
-
-//++++++++++++++++++++++++++++++++++ EmergencyStop ++++++++++++++++++++++++++++++++++++++++++++
-
-task EmergencyStop(){
-	bool RobotStatus = true;
-	while(true){
-		if(SensorValue[FrontButton] == 1){
-			if(RobotStatus){
-				StopTask(DriveUsingController);
-				RobotStatus = false;
-			}
-			else{
-				StartTask(DriveUsingController);
-				RobotStatus = true;
-			}
-
-		}
-		else if(SensorValue[BackButton] == 1){
-			if(RobotStatus){
-				StopTask(DriveUsingController);
-				RobotStatus = false;
-			}
-			else{
-				StartTask(DriveUsingController);
-				RobotStatus = true;
-			}
-		}
-			else if(vexRT[Btn8D] == 1){
-			if(RobotStatus){
-				StopTask(DriveUsingController);
-				RobotStatus = false;
-			}
-			else{
-				StartTask(DriveUsingController);
-				RobotStatus = true;
-			}
-		}
-	}
-}
-//++++++++++++++++++++++++++++++++++ battery ++++++++++++++++++++++++++++++++++++++++++++
-task battery(){
-	bLCDBacklight = true;									// Turn on LCD Backlight
-	string mainBattery, backupBattery;
-
-	while(true)														// An infinite loop to keep the program running until you terminate it
-	{
-		clearLCDLine(0);											// Clear line 1 (0) of the LCD
-		clearLCDLine(1);											// Clear line 2 (1) of the LCD
-
-		//Display the Primary Robot battery voltage
-		displayLCDString(0, 0, "Primary: ");
-		sprintf(mainBattery, "%1.2f%c", nImmediateBatteryLevel/1000.0,'V'); //Build the value to be displayed
-		displayNextLCDString(mainBattery);
-
-		//Display the Backup battery voltage
-		displayLCDString(1, 0, "Backup: ");
-		sprintf(backupBattery, "%1.2f%c", BackupBatteryLevel/1000.0, 'V');	//Build the value to be displayed
-		displayNextLCDString(backupBattery);
-
-		//Short delay for the LCD refresh rate
-		wait1Msec(100);
-	}
-}
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
