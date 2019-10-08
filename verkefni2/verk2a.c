@@ -35,7 +35,7 @@
 
 
 #include "../headers/myheader.h"
-#include "../headers/MotorFunctions.h"
+#include "../headers/MotorFunctions.c"
 
 //+++++++++++++++++++++++++++++++++++++++++++++| MAIN |+++++++++++++++++++++++++++++++++++++++++++++++
 task main()
