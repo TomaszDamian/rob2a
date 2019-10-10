@@ -159,31 +159,27 @@ task EmergencyStop(){
 	bool RobotStatus = true;
 
 	while(true){
-		int RobotButtonStatus = SensorValue(BackButton);
-		int ControllerButtonStatus = vexRT[Btn8D];
+		RobotButtonStatus = SensorValue(BackButton);
+		ControllerButtonStatus = vexRT[Btn8D];
 		wait1Msec(5);
 		if(RobotButtonStatus == 1 && RobotButtonBefore == 0){
 			if(RobotStatus){
-				writeDebugStream("I stopped the task \n");
 				StopTask(DriveUsingController);
 				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
-				writeDebugStream("I started the tast again \n");
 				StartTask(DriveUsingController);
 				RobotStatus = true;
 			}
 		}
 		if(ControllerButtonStatus == 1 && ControllerButtonBefore == 0){
 			if(RobotStatus){
-				writeDebugStream("I stopped the task \n");
 				StopTask(DriveUsingController);
 				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
-				writeDebugStream("I started the tast again \n");
 				StartTask(DriveUsingController);
 				RobotStatus = true;
 			}
