@@ -8,10 +8,19 @@ void drive_time(int drive_time,bool b_f){
 	wait1Msec(drive_time);
 }
 //+++++++++++++++++++++++++++++++++++++++++| stopMotor |+++++++++++++++++++++++++++++++++++++++++++
-void StopMotors(int sop_time){
-	motor[leftMotor]=0;
-	motor[rightMotor]=0;
-	wait1Msec(sop_time);
+void StopMotors(int stop_time){
+	motor[leftMotor] = 0;
+	motor[rightMotor] = 0;
+	motor[crane] = 0;
+	motor[claw] = 0;
+	wait1Msec(stop_time);
+}
+
+void FullStopMotors(){
+	motor[leftMotor] = 0;
+	motor[rightMotor] = 0;
+	motor[crane] = 0;
+	motor[claw] = 0;
 }
 //+++++++++++++++++++++++++++++++++++++++++| reset_encoder |+++++++++++++++++++++++++++++++++++++++++++
 void reset_encoder(){
@@ -95,41 +104,27 @@ void turn_giro(int degrees10,bool counterclock){
 //++++++++++++++++++++++++++++++++++++ DriveUsingController ++++++++++++++++++++++++++++++++++++++
 
 task DriveUsingController(){
-	int joy_x;            // will hold the X value of the analog stick (choices below)
-  int joy_y;            // will hold the Y value of the analog stick (choices below)
-  int threshold = 15;   // helps to eliminate 'noise' from a joystick that isn't perfectly at (0,0)
+  int threshold = 10;   // helps to eliminate 'noise' from a joystick that isn't perfectly at (0,0)
 
   while(true)
   {
-    joy_x = vexRT[Ch1];   // This is the RIGHT analog stick.  For LEFT, change 'Ch1' to 'Ch4'.
-    joy_y = vexRT[Ch2];   // This is the RIGHT analog stick.  For LEFT, change 'Ch2' to 'Ch3'.
+  	//left motor is controlled by the left joystick
+  	if(abs(vexRT[Ch3]) >= threshold){
+  		motor[leftMotor] = vexRT[Ch3];
+  	}
+  	else{
+  		motor[leftMotor] = 0;
+  	}
 
-    // Forward, and swing turns: (both abs(X) and abs(Y) are above the threshold, and Y is POSITIVE)
-    if((abs(joy_x) > threshold) && (abs(joy_y) > threshold) && (joy_y > 0))
-    {
-      motor[leftMotor]  = (joy_y + joy_x)/2;
-      motor[rightMotor] = (joy_y - joy_x)/2;
-    }
-    // Backwards and swing turns: (both abs(X) and abs(Y) are above the threshold, and Y is NEGATIVE)
-    else if((abs(joy_x) > threshold) && (abs(joy_y) > threshold) && (joy_y < 0))
-    {
-      motor[leftMotor]  = (joy_y - joy_x)/2;
-      motor[rightMotor] = (joy_y + joy_x)/2;
-    }
-    // Turning in place: (abs(X) is above the threshold, abs(Y) is below the threshold)
-    else if((abs(joy_x) > threshold) && (abs(joy_y) < threshold))
-    {
-      motor[leftMotor]  = joy_x;
-      motor[rightMotor] = (-1 * joy_x);
-    }
-    // Standing still: (both abs(X) and abs(Y) are below the threshold)
-    else
-    {
-      motor[leftMotor]  = 0;
-      motor[rightMotor] = 0;
-    }
+  	//right motor is controlled by the right joystick
+  	if(abs(vexRT[Ch2]) >= threshold){
+  		motor[rightMotor] = vexRT[Ch2];
+  	}
+  	else{
+  		motor[rightMotor] = 0;
+  	}
 
-
+		//claw motors
     if(vexRT[Btn5U] == 1){
     	motor[claw] = 80;
    	}
@@ -140,7 +135,7 @@ task DriveUsingController(){
    		motor[claw] = 0;
    	}
 
-
+		//arm motors
    	if((vexRT[Btn6U] == 1) && (SensorValue[Potient] > 0)){
    		motor[crane] = 80;
    	}
@@ -156,39 +151,46 @@ task DriveUsingController(){
 //++++++++++++++++++++++++++++++++++ EmergencyStop ++++++++++++++++++++++++++++++++++++++++++++
 
 task EmergencyStop(){
-	bool RobotStatus = true;
-	while(true){
-		if(SensorValue[FrontButton] == 1){
-			if(RobotStatus){
-				StopTask(DriveUsingController);
-				RobotStatus = false;
-			}
-			else{
-				StartTask(DriveUsingController);
-				RobotStatus = true;
-			}
 
-		}
-		else if(SensorValue[BackButton] == 1){
+	int RobotButtonBefore = 0;
+	int RobotButtonStatus = 0;
+	int ControllerButtonBefore = 0;
+	int ControllerButtonStatus = 0;
+	bool RobotStatus = true;
+
+	while(true){
+		int RobotButtonStatus = SensorValue(BackButton);
+		int ControllerButtonStatus = vexRT[Btn8D];
+		wait1Msec(5);
+		if(RobotButtonStatus == 1 && RobotButtonBefore == 0){
 			if(RobotStatus){
+				writeDebugStream("I stopped the task \n");
 				StopTask(DriveUsingController);
+				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
+				writeDebugStream("I started the tast again \n");
 				StartTask(DriveUsingController);
 				RobotStatus = true;
 			}
 		}
-			else if(vexRT[Btn8D] == 1){
+		if(ControllerButtonStatus == 1 && ControllerButtonBefore == 0){
 			if(RobotStatus){
+				writeDebugStream("I stopped the task \n");
 				StopTask(DriveUsingController);
+				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
+				writeDebugStream("I started the tast again \n");
 				StartTask(DriveUsingController);
 				RobotStatus = true;
 			}
 		}
+		RobotButtonBefore = RobotButtonStatus;
+		ControllerButtonBefore = ControllerButtonStatus;
+		wait1Msec(5);
 	}
 }
 //++++++++++++++++++++++++++++++++++ battery ++++++++++++++++++++++++++++++++++++++++++++
