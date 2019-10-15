@@ -214,3 +214,28 @@ task battery(){
 	}
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+task driveForever(){
+	while(true)
+	{
+		if(SensorValue(Light) < 200)
+		{
+			if(SensorValue(Sonar) > 30  || SensorValue(Sonar) == -1)
+			{
+				wait1Msec(200);
+				motor[leftMotor] = 80;
+				motor[rightMotor] = 80;
+			}
+			else
+			{
+				wait1Msec(200);
+				motor[leftMotor] = -80;
+				motor[rightMotor] = 80;
+			}
+		}
+		else
+		{
+			motor[leftMotor] = 0;
+			motor[rightMotor] = 0;
+		}
+	}
+}
