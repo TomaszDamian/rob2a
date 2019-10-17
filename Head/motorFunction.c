@@ -148,6 +148,33 @@ task DriveUsingController(){
   }
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+task driveForever(){
+	while(true)
+	{
+		if(SensorValue(Light) < 200)
+		{
+			if(SensorValue(Sonar) > 40  || SensorValue(Sonar) == -1)
+			{
+				wait1Msec(200);
+				motor[leftMotor] = 80;
+				motor[rightMotor] = 80;
+			}
+			else
+			{
+				wait1Msec(200);
+				motor[leftMotor] = -127;
+				motor[rightMotor] = 127;
+			}
+		}
+		else
+		{
+			motor[leftMotor] = 0;
+			motor[rightMotor] = 0;
+		}
+	}
+}
+
 //++++++++++++++++++++++++++++++++++ EmergencyStop ++++++++++++++++++++++++++++++++++++++++++++
 
 task EmergencyStop(){
@@ -164,23 +191,23 @@ task EmergencyStop(){
 		wait1Msec(5);
 		if(RobotButtonStatus == 1 && RobotButtonBefore == 0){
 			if(RobotStatus){
-				StopTask(DriveUsingController);
+				StopTask(driveForever);
 				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
-				StartTask(DriveUsingController);
+				StartTask(driveForever);
 				RobotStatus = true;
 			}
 		}
 		if(ControllerButtonStatus == 1 && ControllerButtonBefore == 0){
 			if(RobotStatus){
-				StopTask(DriveUsingController);
+				StopTask(driveForever);
 				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
-				StartTask(DriveUsingController);
+				StartTask(driveForever);
 				RobotStatus = true;
 			}
 		}
@@ -211,31 +238,5 @@ task battery(){
 
 		//Short delay for the LCD refresh rate
 		wait1Msec(100);
-	}
-}
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-task driveForever(){
-	while(true)
-	{
-		if(SensorValue(Light) < 200)
-		{
-			if(SensorValue(Sonar) > 30  || SensorValue(Sonar) == -1)
-			{
-				wait1Msec(200);
-				motor[leftMotor] = 80;
-				motor[rightMotor] = 80;
-			}
-			else
-			{
-				wait1Msec(200);
-				motor[leftMotor] = -80;
-				motor[rightMotor] = 80;
-			}
-		}
-		else
-		{
-			motor[leftMotor] = 0;
-			motor[rightMotor] = 0;
-		}
 	}
 }
