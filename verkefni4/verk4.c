@@ -24,7 +24,6 @@
 
 task main()
 {
-
 	StartTask(battery);
 	StartTask(EmergencyStop);
 	StartTask(driveForever);
