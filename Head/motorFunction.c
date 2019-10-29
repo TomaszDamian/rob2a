@@ -22,11 +22,13 @@ void FullStopMotors(){
 	motor[crane] = 0;
 	motor[claw] = 0;
 }
+
 //+++++++++++++++++++++++++++++++++++++++++| reset_encoder |+++++++++++++++++++++++++++++++++++++++++++
 void reset_encoder(){
 	SensorValue[RightQuadEncoder] = 0;	  // Set the encoder so that it starts counting at 0
 	SensorValue[LeftQuadEncoder]  = 0;	  // Set the encoder so that it starts counting at 0
 }
+
 //+++++++++++++++++++++++++++++++++++++++++++++| drive |+++++++++++++++++++++++++++++++++++++++++++++++
 void Drive(int dist, bool b_f){				// Robot waits for 2000 milliseconds before executing program
 	// returnar true = 1 | false = -1
@@ -55,6 +57,7 @@ int dir = (b_f)? (1):(-1);
 		}
 	}
 }
+
 //+++++++++++++++++++++++++++++++++++++++++++++| turns |++++++++++++++++++++++++++++++++++++++++++++++
 void Turn(int dist, int turns)
 {
@@ -101,6 +104,7 @@ void turn_giro(int degrees10,bool counterclock){
   motor[leftMotor] = 5;
   wait1Msec(250);
 }
+
 //++++++++++++++++++++++++++++++++++++ DriveUsingController ++++++++++++++++++++++++++++++++++++++
 
 task DriveUsingController(){
@@ -148,7 +152,7 @@ task DriveUsingController(){
   }
 }
 
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++ driveForever +++++++++++++++++++++++++++++++++++++++++++++++
 task driveForever(){
 	while(true)
 	{
@@ -173,6 +177,52 @@ task driveForever(){
 			motor[rightMotor] = 0;
 		}
 	}
+}
+//++++++++++++++++++++++++++++++++++++ DriveUsingLineSensor ++++++++++++++++++++++++++++++++++++++
+task DriveUsingLineSensor(){
+	int threshold = 505;
+	while(true)
+		if(SensorValue(Sonar) > 40  || SensorValue(Sonar) == -1)
+			{
+				wait1Msec(200);
+					// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
+		    displayLCDCenteredString(0, "LEFT  CNTR  RGHT");        //  Display   |
+		    displayLCDPos(1,0);                                     //  Sensor    |
+		    displayNextLCDNumber(SensorValue(LeftLineFollow));    //  Readings  |
+		    displayLCDPos(1,6);                                     //  to LCD.   |
+		    displayNextLCDNumber(SensorValue(CenterLineFollow));  //            |
+		    displayLCDPos(1,12);                                    //  L  C  R   |
+		    displayNextLCDNumber(SensorValue(RightLineFollow));   //  x  x  x   |
+		    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
+
+		    // RIGHT sensor sees dark:
+		    if(SensorValue(RightLineFollow) > threshold)
+		    {
+		      // counter-steer right:
+		      motor[leftMotor]  = 80;
+		      motor[rightMotor] = 0;
+		    }
+		    // CENTER sensor sees dark:
+		    if(SensorValue(CenterLineFollow) > threshold)
+		    {
+		      // go straight
+		      motor[leftMotor]  = 80;
+		      motor[rightMotor] = 80;
+		    }
+		    // LEFT sensor sees dark:
+		    if(SensorValue(LeftLineFollow) > threshold)
+		    {
+		      // counter-steer left:
+		      motor[leftMotor]  = 0;
+		      motor[rightMotor] = 80;
+		    }
+			}
+			else
+			{
+				wait1Msec(200);
+				motor[leftMotor] = 0;
+				motor[rightMotor] = 0;
+			}
 }
 
 //++++++++++++++++++++++++++++++++++ EmergencyStop ++++++++++++++++++++++++++++++++++++++++++++
@@ -240,3 +290,4 @@ task battery(){
 		wait1Msec(100);
 	}
 }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
