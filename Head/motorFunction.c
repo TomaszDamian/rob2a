@@ -180,49 +180,38 @@ task driveForever(){
 }
 //++++++++++++++++++++++++++++++++++++ DriveUsingLineSensor ++++++++++++++++++++++++++++++++++++++
 task DriveUsingLineSensor(){
-	int threshold = 505;
-	while(true)
-		if(SensorValue(Sonar) > 40  || SensorValue(Sonar) == -1)
-			{
-				wait1Msec(200);
-					// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
-		    displayLCDCenteredString(0, "LEFT  CNTR  RGHT");        //  Display   |
-		    displayLCDPos(1,0);                                     //  Sensor    |
-		    displayNextLCDNumber(SensorValue(LeftLineFollow));    //  Readings  |
-		    displayLCDPos(1,6);                                     //  to LCD.   |
-		    displayNextLCDNumber(SensorValue(CenterLineFollow));  //            |
-		    displayLCDPos(1,12);                                    //  L  C  R   |
-		    displayNextLCDNumber(SensorValue(RightLineFollow));   //  x  x  x   |
-		    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
-
-		    // RIGHT sensor sees dark:
-		    if(SensorValue(RightLineFollow) > threshold)
-		    {
-		      // counter-steer right:
-		      motor[leftMotor]  = 80;
-		      motor[rightMotor] = 0;
-		    }
-		    // CENTER sensor sees dark:
-		    if(SensorValue(CenterLineFollow) > threshold)
-		    {
-		      // go straight
-		      motor[leftMotor]  = 80;
-		      motor[rightMotor] = 80;
-		    }
-		    // LEFT sensor sees dark:
-		    if(SensorValue(LeftLineFollow) > threshold)
-		    {
-		      // counter-steer left:
-		      motor[leftMotor]  = 0;
-		      motor[rightMotor] = 80;
-		    }
+	while(true){
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
+    //this is just a setup for the display to show the values							|
+		//of the line sensors                                                 |
+		displayLCDCenteredString(0, "LEFT  CNTR  RGHT");        //  Display   |
+    displayLCDPos(1,0);                                     //  Sensor    |
+    displayNextLCDNumber(SensorValue(LeftLineFollow));    //  Readings    |
+    displayLCDPos(1,6);                                     //  to LCD.   |
+    displayNextLCDNumber(SensorValue(CenterLineFollow));  //              |
+    displayLCDPos(1,12);                                    //  L  C  R   |
+    displayNextLCDNumber(SensorValue(RightLineFollow));   //  x  x  x     |
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
+		if(SensorValue(Sonar) > 10 || SensorValue(Sonar) == -1){
+			//2800 black
+			//2600 white
+			if(SensorValue(CenterLineFollow) >= 2700){
+					motor[rightMotor] = 60;
+					motor[leftMotor] = 60;
 			}
-			else
-			{
-				wait1Msec(200);
-				motor[leftMotor] = 0;
-				motor[rightMotor] = 0;
+			if(SensorValue(RightLineFollow) < 2700){
+					motor[rightMotor] = 90;
+					motor[leftMotor] = 0;
 			}
+			if(SensorValue(LeftLineFollow) < 2700){
+					motor[rightMotor] = 0;
+					motor[leftMotor] = 90;
+			}
+		}
+		else{
+			FullStopMotors();
+		}
+	}
 }
 
 //++++++++++++++++++++++++++++++++++ EmergencyStop ++++++++++++++++++++++++++++++++++++++++++++
@@ -241,23 +230,23 @@ task EmergencyStop(){
 		wait1Msec(5);
 		if(RobotButtonStatus == 1 && RobotButtonBefore == 0){
 			if(RobotStatus){
-				StopTask(driveForever);
+				StopTask(DriveUsingLineSensor);
 				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
-				StartTask(driveForever);
+				StartTask(DriveUsingLineSensor);
 				RobotStatus = true;
 			}
 		}
 		if(ControllerButtonStatus == 1 && ControllerButtonBefore == 0){
 			if(RobotStatus){
-				StopTask(driveForever);
+				StopTask(DriveUsingLineSensor);
 				FullStopMotors();
 				RobotStatus = false;
 			}
 			else{
-				StartTask(driveForever);
+				StartTask(DriveUsingLineSensor);
 				RobotStatus = true;
 			}
 		}
