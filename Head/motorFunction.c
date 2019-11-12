@@ -30,7 +30,7 @@ void reset_encoder(){
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++| drive |+++++++++++++++++++++++++++++++++++++++++++++++
-void Drive(int dist, bool b_f){				// Robot waits for 2000 milliseconds before executing program
+void Drive(int dist, bool b_f){
 	// returnar true = 1 | false = -1
 	reset_encoder();
 int dir = (b_f)? (1):(-1);
@@ -80,7 +80,7 @@ void Turn(int dist, int turns)
 
 //+++++++++++++++++++++++++++++++++++++++++++++| turn_Giro |++++++++++++++++++++++++++++++++++++++++++++++
 
-void turn_giro(int degrees10,bool counterclock){
+void turn_giro(int degrees10,bool direction){
 	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
 	reset_encoder();
   //Reconfigure Analog Port 7 as a Gyro sensor and allow time for ROBOTC to calibrate it
@@ -89,7 +89,7 @@ void turn_giro(int degrees10,bool counterclock){
 
   while(abs(SensorValue[LeftQuadEncoder]) < degrees10)
   {
-		if (counterclock){
+		if (direction){
 		motor[rightMotor] = 80;
 		motor[leftMotor] = -80;
 		}
@@ -255,6 +255,22 @@ task EmergencyStop(){
 		wait1Msec(5);
 	}
 }
+
+//++++++++++++++++++++++++++++++++++ Begin ++++++++++++++++++++++++++++++++++++++++++++
+task Begin(){
+	//first you have to open the claw
+	motor[claw] = 127;
+	wait1Msec(5);
+	motor[claw] = 0;
+	//then you want to lift the crane
+	motor[crane] = 127;
+	wait1Msec(5);
+	motor[crane] = 0;
+	//then you do your initial movements
+	Turn(TURNGIRO,true);
+	Drive(BASEDIST,true);
+}
+
 //++++++++++++++++++++++++++++++++++ battery ++++++++++++++++++++++++++++++++++++++++++++
 task battery(){
 	bLCDBacklight = true;									// Turn on LCD Backlight
