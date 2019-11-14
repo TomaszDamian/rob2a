@@ -213,7 +213,6 @@ task DriveUsingLineSensor(){
 		}
 	}
 }
-
 //++++++++++++++++++++++++++++++++++ EmergencyStop ++++++++++++++++++++++++++++++++++++++++++++
 
 task EmergencyStop(){
@@ -259,15 +258,23 @@ task EmergencyStop(){
 //++++++++++++++++++++++++++++++++++ Begin ++++++++++++++++++++++++++++++++++++++++++++
 task Begin(){
 	//first you have to open the claw
+
+	wait10Msec(10);
+	//maybe this doesn't work \/
+		if((SensorValue[Potient] > 0)){
+   		motor[crane] = 80;
+   	}
+   	else if((SensorValue[Potient] < 850) ){
+   		motor[crane] = -80;
+   	}
+   	else{
+   		motor[crane] = 0;
+
+	//then you want to lift the crane
 	motor[claw] = 127;
 	wait1Msec(5);
 	motor[claw] = 0;
-	//then you want to lift the crane
-	motor[crane] = 127;
-	wait1Msec(5);
-	motor[crane] = 0;
 	//then you do your initial movements
-	Turn(TURNGIRO,true);
 	Drive(BASEDIST,true);
 }
 

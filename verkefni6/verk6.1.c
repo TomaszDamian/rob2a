@@ -28,18 +28,18 @@ task main()
 	//make sure to get it back to that position before you pass it into the next task
 
 	//you start always by calling this
-	Begin();
-
+	StartTask(Begin);
+	Turn(TURNDIST, true);
 	//you turn to whichever direction you want to go to first
 	Turn(TURNDIST/2, false);
 	//since there are some black lines while you're going through the middle
 	//you want to ignore them and just drive forward for about 1.5m
-	Drive(BASEDIST*2.5, true);
+	Drive(BASEDIST*3, true);
 	//THEN you want to start the line sensor task
-	startTask(DriveUsingLineSensor());
+	StartTask(DriveUsingLineSensor);
 	//when he finds something that is infront of him he will stop driving and start picking up the item
 	if(SensorValue(Sonar) < 15){
-		StopTask(DriveUsingController());
+		StopTask(DriveUsingLineSensor);
 		FullStopMotors();
 		motor[crane] = -127;
 		wait1Msec(10);
@@ -48,23 +48,29 @@ task main()
 		wait1Msec(5);
 		motor[claw] = 0;
 		motor[crane] = 127;
-		wait1Msec(5)
+		wait1Msec(5);
 		motor[crane] = 0;
 	}
 	//when he's done picking up the item the crane should already be back in the air and the claw should be closed
-	//then you want to burn 180 degrees and drive forward for half a meter
-	Turn(TURNDIST, true);
+	//then you want to turn 180 degrees and drive forward for half a meter
+	Turn(TURNDIST*2, true);
 	Drive(BASEDIST, true);
 
 	//then you just want to repeat what you did above but in the opposite direction
-	Turn(TURNDIST/2, true);
-	Drive(BASEDIST*2.5, true);
-	startTask(DriveUsingLineSensor());
+	Turn(TURNDIST, true);
+	Drive(BASEDIST*3, true);
+	StartTask(DriveUsingLineSensor);
 	if(SensorValue(Sonar) < 15){
-		StopTask(DriveUsingController());
+		StopTask(DriveUsingLineSensor);
 		//set the crane back down as that is the initial position
 		motor[crane] = -127;
 		wait1Msec(5);
 		motor[crane] = 0;
+			wait10Msec(5);
+		//opens the claw as that is the initial position
+		motor[claw] = 127;
+		wait1Msec(5);
+		motor[claw] = 0;
 	}
+}
 }
