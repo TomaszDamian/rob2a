@@ -19,6 +19,8 @@
 	part two of 4, this code is responsible for the second part of what is supposed to happen.
 	This is supposed to drive towards ball 2
 */
+#include "../Head/constNumber.h"
+
 task main()
 {
 //turns function false = right | true = left
@@ -28,6 +30,7 @@ task main()
 
 	//you start always by calling this
 	StartTask(Begin);
+	Drive(distance,true);
 	Turn(TURNDIST, true);
 	//you turn to whichever direction you want to go to first
 	//since there are some black lines while you're going through the middle

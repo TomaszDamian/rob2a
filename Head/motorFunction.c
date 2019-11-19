@@ -258,24 +258,29 @@ task EmergencyStop(){
 //++++++++++++++++++++++++++++++++++ Begin ++++++++++++++++++++++++++++++++++++++++++++
 task Begin(){
 	//first you have to open the claw
-
-	wait10Msec(10);
-	//maybe this doesn't work \/
-		if((SensorValue[Potient] > 0)){
-   		motor[crane] = 80;
-   	}
-   	else if((SensorValue[Potient] < 850) ){
-   		motor[crane] = -80;
-   	}
-   	else{
-   		motor[crane] = 0;
+	motor[crane] = 127;
+	wait1Msec(750);
+	motor[crane] = 0;
 
 	//then you want to lift the crane
 	motor[claw] = 127;
-	wait1Msec(5);
+	wait1Msec(300);
 	motor[claw] = 0;
-	//then you do your initial movements
-	Drive(BASEDIST,true);
+	//then you do your initial movements+
+	//this was giving problems
+	//Drive(distance,true);
+}
+//++++++++++++++++++++++++++++++++++ end ++++++++++++++++++++++++++++++++++++++++++++
+task End(){
+	//first you have to open the claw
+	motor[crane] = -127;
+	wait1Msec(750);
+	motor[crane] = 0;
+
+	//then you want to lift the crane
+	motor[claw] = -127;
+	wait1Msec(300);
+	motor[claw] = 0;
 }
 
 //++++++++++++++++++++++++++++++++++ battery ++++++++++++++++++++++++++++++++++++++++++++

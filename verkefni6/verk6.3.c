@@ -19,6 +19,8 @@
 	part two of 4, this code is responsible for the thrid part of what is supposed to happen.
 	This is supposed to drive towards ball 3
 */
+#include "../Head/constNumber.h"
+
 task main()
 {
 //turns function false = right | true = left
@@ -57,7 +59,7 @@ task main()
 	Drive(BASEDIST, true);
 
 	//then you just want to repeat what you did above but in the opposite direction
-	Turn(TURNDIST, false);
+	Turn(TURNDIST, true);
 	Drive(BASEDIST, true);
 	Turn(TURNDIST, false);
 	StartTask(DriveUsingLineSensor);
