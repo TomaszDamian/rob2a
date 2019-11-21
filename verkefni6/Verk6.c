@@ -23,58 +23,8 @@
 
 task main()
 {
-//turns function false = right | true = left
-
-//crane down and claw closed is the initial position of the robot's arm
-	//make sure to get it back to that position before you pass it into the next task
-
-	//you start always by calling this
-		StartTask(Begin);
-		Drive(BASEDIST,true);
-		Turn(TURNDIST, false);
-		wait10Msec(10);
-	//you turn to whichever direction you want to go to first
-	//since there are some black lines while you're going through the middle
-	//you want to ignore them and just drive forward for about 0.5m
-	Drive(BASEDIST, true);
-
-	Turn(TURNDIST, true);
-	//THEN you want to start the line sensor task
-		StartTask(DriveUsingLineSensor);
-	//when he finds something that is infront of him he will stop driving and start picking up the item
-	if(SensorValue(Sonar) < 15){
-		StopTask(DriveUsingLineSensor);
-		FullStopMotors();
-		motor[crane] = -127;
-		wait1Msec(10);
-		motor[crane] = 0;
-		motor[claw] = -127;
-		wait1Msec(5);
-		motor[claw] = 0;
-		motor[crane] = 127;
-		wait1Msec(5);
-		motor[crane] = 0;
-	}
-	//when he's done picking up the item the crane should already be back in the air and the claw should be closed
-	//then you want to turn 180 degrees and drive forward for half a meter
-	Turn(TURNDIST*2, true);
-	Drive(BASEDIST, true);
-
-	//then you just want to repeat what you did above but in the opposite direction
-	Turn(TURNDIST, false);
-	Drive(BASEDIST, true);
-	Turn(TURNDIST, true);
-	StartTask(DriveUsingLineSensor);
-	if(SensorValue(Sonar) < 15){
-		StopTask(DriveUsingLineSensor);
-		//set the crane back down as that is the initial position
-		motor[crane] = -127;
-		wait1Msec(5);
-		motor[crane] = 0;
-		wait10Msec(5);
-		//opens the claw as that is the initial position
-		motor[claw] = 127;
-		wait1Msec(5);
-		motor[claw] = 0;
-	}
+	//verk6.1
+	//verk6.2
+	//verk6.3
+	//verk6.4
 }
