@@ -256,7 +256,7 @@ task EmergencyStop(){
 }
 
 //++++++++++++++++++++++++++++++++++ Begin ++++++++++++++++++++++++++++++++++++++++++++
-task Begin(){
+void Begin(){
 	//first you have to open the claw
 	motor[crane] = 127;
 	wait1Msec(750);
@@ -266,12 +266,9 @@ task Begin(){
 	motor[claw] = 127;
 	wait1Msec(300);
 	motor[claw] = 0;
-	//then you do your initial movements+
-	//this was giving problems
-	//Drive(distance,true);
 }
 //++++++++++++++++++++++++++++++++++ end ++++++++++++++++++++++++++++++++++++++++++++
-task End(){
+void End(){
 	//first you have to open the claw
 	motor[crane] = -127;
 	wait1Msec(750);
