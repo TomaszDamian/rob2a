@@ -29,46 +29,37 @@ task main()
 	//make sure to get it back to that position before you pass it into the next task
 
 	//you start always by calling this
+	//Begin();
 	while(true){
-		Begin();
-		DriveLineSensAndEncoder(BASEDIST);
-		wait10Msec(50);
-		Turn(TURNDIST, true);
-		wait10Msec(250);
-	//you turn to whichever direction you want to go to first
-	//since there are some black lines while you're going through the middle
-	//you want to ignore them and just drive forward for about 0.5m
-		DriveLineSensAndEncoder(BASEDIST);
-		Turn(TURNDIST, false);
-	//THEN you want to start the line sensor task
-		DriveLineSensAndEncoder(BASEDIST);
-	//when he finds something that is infront of him he will stop driving and start picking up the item
-
-		if(SensorValue(Sonar) <= 17){
+		if(SensorValue(CenterLineFollow) > 2900 && SensorValue(RightLineFollow) > 2900 && SensorValue(LeftLineFollow) > 2900){
 			FullStopMotors();
-			crane_(false);
-			claw_(false);
-			crane_(true);
+			break;
 		}
-		Turn(TURNDIST*1.8, true);
-		DriveLineSensAndEncoder(BASEDIST);
-
-	//then you just want to repeat what you did above but in the opposite direction
-		Turn(TURNDIST, true);
-		DriveLineSensAndEncoder(BASEDIST);
-		Turn(TURNDIST, false);
-		DriveLineSensAndEncoder(BASEDIST);
-
-		if(sensorValue(CenterLineFollow) < 2600 && sensorValue(rightLineFollow) < 2600 && sensorValue(leftLineFollow) < 2600){
-		//set the crane back down as that is the initial position
-			crane_(false);
-			wait10Msec(10);
-		//opens the claw as that is the initial position
-			Claw_(true);
-			wait10Msec(10);
-			Claw_(false);
+		else if(SensorValue(CenterLineFollow) > 2900 || SensorValue(RightLineFollow) > 2900){
+			motor[rightMotor] = 60;
+			motor[leftMotor] = 80;
+		}
+		else if(SensorValue(CenterLineFollow) > 2900 || SensorValue(LeftLineFollow) > 2900){
+			motor[rightMotor] = 80;
+			motor[leftMotor] = 60;
+		}
+		else{
+			motor[rightMotor] = 60;
+			motor[leftMotor] = 60;
 		}
 	}
+	wait1Msec(2000);
+
+	while(true){
+		motor[rightMotor] = 80;
+		motor[leftMotor] = -40;
+		wait1Msec(250);
+		if(SensorValue(CenterLineFollow) > 2900){
+			FullStopMotors();
+			break;
+		}
+	}
+
 /*	//when he's done picking up the item the crane should already be back in the air and the claw should be closed
 	//then you want to turn 180 degrees and drive forward for half a meter
 	Turn(TURNDIST*2, true);
