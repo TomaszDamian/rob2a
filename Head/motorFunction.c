@@ -19,8 +19,6 @@ void StopMotors(int stop_time){
 void FullStopMotors(){
 	motor[leftMotor] = 0;
 	motor[rightMotor] = 0;
-	motor[crane] = 0;
-	motor[claw] = 0;
 }
 
 //+++++++++++++++++++++++++++++++++++++++++| reset_encoder |+++++++++++++++++++++++++++++++++++++++++++
@@ -256,22 +254,24 @@ task EmergencyStop(){
 }
 
 //++++++++++++++++++++++++++++++++++ Begin ++++++++++++++++++++++++++++++++++++++++++++
-void Begin(){
+	void Begin(){
 	//first you have to open the claw
 	motor[crane] = 127;
-	wait1Msec(750);
+	wait1Msec(40);
 	motor[crane] = 0;
 
 	//then you want to lift the crane
 	motor[claw] = 127;
-	wait1Msec(300);
+	wait1Msec(375);
 	motor[claw] = 0;
 }
 //++++++++++++++++++++++++++++++++++ end ++++++++++++++++++++++++++++++++++++++++++++
-void End(){
+void End(int dist){
+	//int distance = dist * 10;
+  //Turn(distance*2,true);
 	//first you have to open the claw
 	motor[crane] = -127;
-	wait1Msec(750);
+	wait1Msec(40);
 	motor[crane] = 0;
 
 	//then you want to lift the crane
@@ -280,6 +280,37 @@ void End(){
 	motor[claw] = 0;
 }
 
+void Claw_(bool b_f){
+		int dir = (b_f)? (1):(-1);
+		motor[claw] = 127* dir;
+		wait1Msec(300);
+		motor[claw] = 0*dir;
+}
+void Crane_(bool b_f){
+		int dir = (b_f)? (1):(-1);
+		motor[crane] = -127 * dir;
+		wait1Msec(100);
+		motor[crane] = 0 *dir;
+}
+//++++++++++++++++++++++++++++++++++ linesensorAndEncoder ++++++++++++++++++++++++++++++++++++++++++++
+void DriveLineSensAndEncoder(int dist){
+int distance = dist * 10;
+	while(distance > abs(SensorValue[RightQuadEncoder]) && abs(SensorValue[LeftQuadEncoder]) < distance)		// Creates an infinite loop, since "true" always evaluates to true
+	{
+		if(SensorValue(CenterLineFollow) >= 2700){
+					motor[rightMotor] = 60;
+					motor[leftMotor] = 60;
+			}
+			if(SensorValue(RightLineFollow) < 2700){
+					motor[rightMotor] = 90;
+					motor[leftMotor] = 0;
+			}
+			if(SensorValue(LeftLineFollow) < 2700){
+					motor[rightMotor] = 0;
+					motor[leftMotor] = 90;
+			}
+	}
+}
 //++++++++++++++++++++++++++++++++++ battery ++++++++++++++++++++++++++++++++++++++++++++
 task battery(){
 	bLCDBacklight = true;									// Turn on LCD Backlight
