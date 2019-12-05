@@ -311,6 +311,26 @@ int distance = dist * 10;
 			}
 	}
 }
+
+void verk6(){
+	while(true){
+			if(SensorValue(CenterLineFollow) >= 2700){
+				motor[rightMotor] = 80;
+				motor[leftMotor] = 80;
+			}
+			if(SensorValue(LeftLineFollow) > 2500){
+				motor[rightMotor] = 80;
+				motor[leftMotor] = -10;
+			}
+			if(SensorValue(RightLineFollow) > 2500){
+				motor[leftMotor] = 80;
+				motor[rightMotor] = -10;
+			}
+			if(SensorValue(CenterLineFollow) < 2400 && SensorValue(RightLineFollow) < 2400 && SensorValue(LeftLineFollow) < 2400){
+				break;
+			}
+	}
+}
 //++++++++++++++++++++++++++++++++++ battery ++++++++++++++++++++++++++++++++++++++++++++
 task battery(){
 	bLCDBacklight = true;									// Turn on LCD Backlight
