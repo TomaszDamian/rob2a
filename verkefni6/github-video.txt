@@ -3,3 +3,5 @@ Youtube video
 Github link to header folder
 https://github.com/TomaszDamian/rob2a/blob/master/Head/motorFunction.c
 lines 257 - 294, 315 - 333
+Github link to program
+https://github.com/TomaszDamian/rob2a/blob/master/verkefni6/testVerk6.c
